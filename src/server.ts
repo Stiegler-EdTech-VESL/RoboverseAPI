@@ -249,24 +249,25 @@ app.delete(
 
 //-------------------------------User Routes-------------------------------
 // can also do EITHER /users?epic_id={epic_id} OR /users?discord_id={discord_id}
-app.get("/players", async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const epic_id = req.query.epic_id as string;
-    const name = req.query.name as string;
-    if (epic_id) {
-      const player = await db.getUserByEpicId(epic_id);
-      res.json(player);
-    } else if (name) {
-      const player = await db.getUserByName(name);
-      res.json(player);
-    } else {
-      const players = await db.getAllUsers();
-      res.json({ players });
-    }
-  } catch (error) {
-    next(error);
-  }
-});
+// Erin -- this endpoint is never used since name is not unique and Epic Id is not used
+// app.get("/players", async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const epic_id = req.query.epic_id as string;
+//     const name = req.query.name as string;
+//     if (epic_id) {
+//       const player = await db.getUserByEpicId(epic_id);
+//       res.json(player);
+//     } else if (name) {
+//       const player = await db.getUserByName(name);
+//       res.json(player);
+//     } else {
+//       const players = await db.getAllUsers();
+//       res.json({ players });
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 app.get(
   "/players/:id",
@@ -335,6 +336,7 @@ app.put(
         totalEqMatchesWon: undefined,
         totalEqMatchesLost: undefined,
         current_eq_id: (req.params.current_eq_id as string) || undefined,
+
       });
       res.json({ message: "Player Updated", user_id: user.id });
     } catch (error) {
