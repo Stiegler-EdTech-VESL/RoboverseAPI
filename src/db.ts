@@ -186,6 +186,7 @@ export async function upsertUser(data: User) {
         totalEqMatches: data.totalEqMatches || 0,
         totalEqMatchesWon: data.totalEqMatchesWon || 0,
         totalEqMatchesLost: data.totalEqMatchesLost || 0,
+        current_eq: data.current_eq || undefined,
       },
       update: {
         name: data.name || undefined,
@@ -198,6 +199,7 @@ export async function upsertUser(data: User) {
         totalEqMatches: data.totalEqMatches || 0,
         totalEqMatchesWon: data.totalEqMatchesWon || 0,
         totalEqMatchesLost: data.totalEqMatchesLost || 0,
+        current_eq: data.current_eq || undefined,
       },
     });
     return user;
