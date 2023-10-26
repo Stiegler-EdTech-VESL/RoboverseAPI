@@ -327,7 +327,7 @@ app.put(
         image: (req.query.image as string) || undefined,
         emailVerified: undefined,
         perm_id: (req.query.perm_id as string) || undefined,
-        progression_lvl: parseInt(req.query.progression_lvl as string)|| undefined, //this needed an option to be undefined
+        progression_lvl: parseInt(req.query.progression_lvl as string)|| undefined,
         global_mu: undefined,
         global_sigma: undefined,
         global_ranking: undefined,
