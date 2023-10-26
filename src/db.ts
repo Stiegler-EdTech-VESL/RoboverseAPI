@@ -202,6 +202,9 @@ export async function upsertUser(data: User) {
         current_eq_id: data.current_eq_id || undefined,
       },
     });
+    const printUser = JSON.stringify(user);
+    console.log("USSSSSSERRRRR: " + printUser);
+
     return user;
   } catch (error) {
     console.error("Error creating user:", error);
