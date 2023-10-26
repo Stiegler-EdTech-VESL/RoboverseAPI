@@ -327,7 +327,7 @@ app.put(
         image: (req.query.image as string) || undefined,
         emailVerified: undefined,
         perm_id: (req.query.perm_id as string) || undefined,
-        progression_lvl: parseInt(req.query.progression_lvl as string),
+        progression_lvl: parseInt(req.query.progression_lvl as string)|| undefined, //this needed an option to be undefined
         global_mu: undefined,
         global_sigma: undefined,
         global_ranking: undefined,
@@ -335,8 +335,7 @@ app.put(
         totalEqMatches: undefined,
         totalEqMatchesWon: undefined,
         totalEqMatchesLost: undefined,
-        current_eq_id: (req.params.current_eq_id as string) || undefined,
-
+        current_eq_id: (req.query.current_eq_id as string) || undefined,
       });
       res.json({ message: "Player Updated", user_id: user.id });
     } catch (error) {
