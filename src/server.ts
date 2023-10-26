@@ -304,6 +304,7 @@ app.post(
         global_sigma: undefined,
         global_ranking: undefined,
         global_rank_title: undefined,
+        current_eq: undefined,
       });
       res.json({ message: "Player Created", user_id: user.id });
     } catch (error) {
@@ -334,6 +335,7 @@ app.put(
         totalEqMatches: undefined,
         totalEqMatchesWon: undefined,
         totalEqMatchesLost: undefined,
+        current_eq: (req.params.current_eq as string) || undefined
       });
       res.json({ message: "Player Updated", user_id: user.id });
     } catch (error) {
