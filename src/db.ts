@@ -172,6 +172,7 @@ export async function deleteTeam(teamId: string) {
 
 // Function to upsert a user
 export async function upsertUser(data: User) {
+  console.log("DATA THAT IS PASSED TO UPSERTUSER: " + data.current_eq_id);
   try {
     const user = await prisma.user.upsert({
       where: { id: data.id },
