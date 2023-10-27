@@ -198,9 +198,11 @@ export async function upsertUser(data: User) {
         team_id: data.team_id || undefined,
         image: data.image || undefined,
         perm_id: data.perm_id || undefined,
-        totalEqMatches: data.totalEqMatches || 0,
-        totalEqMatchesWon: data.totalEqMatchesWon || 0,
-        totalEqMatchesLost: data.totalEqMatchesLost || 0,
+        totalEqMatches: data.totalEqMatches || undefined,
+        totalEqMatchesWon: data.totalEqMatchesWon || undefined,
+        totalEqMatchesLost: data.totalEqMatchesLost || undefined,
+        total_tourn_wins: data.total_tourn_wins || undefined,
+        total_tourn_lost: data.total_tourn_lost || undefined,
         current_eq_id: data.current_eq_id || undefined,
       },
     });
@@ -608,28 +610,53 @@ export async function getEquationMatchesByUserId(id: string) {
 // -------------------------------- UserInEquationMatch --------------------------------
 //Erin - if EquationMatch.type is ranked, update ratings/scores, if not then just update status of match
 export async function updateEquationMatchUserMuSigma(eqMatchID: string) {
-  const match = await getEquationMatchById(eqMatchID);
+  const match = await getEquationMatchById(eqMatchID); //Erin - {TeamInEquationMatch[], UserInEquationMatch[]}
   const isRanked = match.type === "Ranked";
-    try {
-      if(isRanked) {
+  const isTourn = match.type === "Competitive";
+  try {
+    if (isRanked) {
       const ratings = await getUserMatchRatings(eqMatchID);
       await updateUserScores(ratings);
-      };
-
-      await prisma.equationMatch.update({
-        where: {
-          id: eqMatchID,
-        },
-        data: {
-          ended: new Date(),
-          status: "FINISHED",
-        },
-      });
-    } catch (error) {
-      console.error("Error updating EquationMatch User Mu Sigma:", error);
-      throw new Error("Failed to update EquationMatch User Mu Sigma.");
     }
-  };
+    if (isTourn) {
+      match.UserInEquationMatch.map((user) => {
+        updateUserTournCount(user);
+      });
+    }
+    await prisma.equationMatch.update({
+      where: {
+        id: eqMatchID,
+      },
+      data: {
+        ended: new Date(),
+        status: "FINISHED",
+      },
+    });
+  } catch (error) {
+    console.error("Error updating EquationMatch User Mu Sigma:", error);
+    throw new Error("Failed to update EquationMatch User Mu Sigma.");
+  }
+}
+
+async function updateUserTournCount(match: UserInEquationMatch) {
+  const user = await getUserById(match.userId);
+  const isWinner = match.winner;
+  const totalTournWins = user.total_tourn_wins;
+  const totalTorunLost = user.total_tourn_lost;
+  if (isWinner == true) {
+    upsertUser({
+      ...user,
+      name: user.name,
+      total_tourn_wins: totalTournWins + 1,
+    });
+  } else {
+    upsertUser({
+      ...user,
+      name:user.name,
+      total_tourn_lost: totalTorunLost + 1,
+    });
+  }
+}
 
 export async function addUserToEquationMatch(
   matchID: string,
@@ -664,7 +691,8 @@ export async function addUserToEquationMatch(
 }
 // -------------------------------- TeamInEquationMatch --------------------------------
 
-export async function getTeamInEquationMatchesByMatchID(id: string) { //Erin - don't need to recreate with User b/c this is not called anywhere?
+export async function getTeamInEquationMatchesByMatchID(id: string) {
+  //Erin - don't need to recreate with User b/c this is not called anywhere?
   try {
     const teamInEquationMatch = await prisma.teamInEquationMatch.findMany({
       where: {
@@ -683,7 +711,8 @@ export async function getTeamInEquationMatchesByMatchID(id: string) { //Erin - d
   }
 }
 
-export async function upsertTeamInEquationmatch(data: TeamInEquationMatch) { //Erin - don't need to recreate with User b/c this is not called anywhere?
+export async function upsertTeamInEquationmatch(data: TeamInEquationMatch) {
+  //Erin - don't need to recreate with User b/c this is not called anywhere?
   try {
     const team = await prisma.team.findUnique({
       where: {
@@ -707,7 +736,8 @@ export async function upsertTeamInEquationmatch(data: TeamInEquationMatch) { //E
   }
 }
 
-export async function deleteTeamInEquationMatch(id: string) { //Erin - don't need to recreate with User b/c this is not called anywhere?
+export async function deleteTeamInEquationMatch(id: string) {
+  //Erin - don't need to recreate with User b/c this is not called anywhere?
   try {
     const teamInEquationMatch = await prisma.teamInEquationMatch.delete({
       where: { id: id },
@@ -740,7 +770,6 @@ export async function updateEquationMatchTeamMuSigma(eqMatchID: string) {
   }
 }
 
-
 export async function addTeamToEquationMatch(
   matchID: string,
   equationID: string,
@@ -764,7 +793,7 @@ export async function addTeamToEquationMatch(
         district_sigma_before: team.district_sigma,
         global_mu_before: team.global_mu,
         global_sigma_before: team.global_sigma,
-        
+
         districtId: team.districtId,
 
         score: score,
@@ -825,8 +854,6 @@ type TeamMatchData = {
   equationMatchId: string;
   teamInEquationMatchID: string;
 };
-
-
 
 async function getTeamMatchRatings(
   eqMatchID: string
@@ -975,11 +1002,11 @@ type UserMatchData = {
   matchId: string;
   equationMatchId: string;
   userInEquationMatchID: string;
-}
+};
 
 async function getUserMatchRatings(
   eqMatchID: string
-): Promise<{ Global: userMatchRating[]}> {
+): Promise<{ Global: userMatchRating[] }> {
   try {
     const match = await prisma.equationMatch.findUnique({
       where: {
@@ -1018,7 +1045,7 @@ async function getUserMatchRatings(
       }
     );
 
-      return { Global: usersGlobal }
+    return { Global: usersGlobal };
 
     //---
   } catch (error) {
@@ -1027,12 +1054,11 @@ async function getUserMatchRatings(
   }
 }
 
-
-async function updateUserScores(ratings: {Global: userMatchRating[]}) {
+async function updateUserScores(ratings: { Global: userMatchRating[] }) {
   const global_ratings = rank.calculateUserRankings(ratings.Global);
 
-
   global_ratings.map(async (user) => {
+    //Erin - I think this is where I need to have the tournament wins and losses incremented
     await prisma.user.update({
       where: {
         id: user.userId,
@@ -1055,5 +1081,4 @@ async function updateUserScores(ratings: {Global: userMatchRating[]}) {
       },
     });
   });
-
 }
