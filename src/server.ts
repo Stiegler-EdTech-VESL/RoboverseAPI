@@ -300,6 +300,8 @@ app.post(
         totalEqMatches: undefined,
         totalEqMatchesWon: undefined,
         totalEqMatchesLost: undefined,
+        total_tourn_wins: undefined,
+        total_tourn_lost: undefined,
         global_mu: undefined,
         global_sigma: undefined,
         global_ranking: undefined,
@@ -335,6 +337,8 @@ app.put(
         totalEqMatches: undefined,
         totalEqMatchesWon: undefined,
         totalEqMatchesLost: undefined,
+        total_tourn_wins: undefined,
+        total_tourn_lost: undefined,
         current_eq_id: (req.query.current_eq_id as string) || undefined,
       });
       res.json({ message: "Player Updated", user_id: user.id });
