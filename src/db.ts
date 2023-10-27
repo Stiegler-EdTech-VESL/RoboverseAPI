@@ -1032,7 +1032,7 @@ async function updateUserScores(ratings: {Global: userMatchRating[]}) {
   const global_ratings = rank.calculateUserRankings(ratings.Global);
 
 
-  global_ratings.map(async (user) => {
+  global_ratings.map(async (user) => { //Erin - I think this is where I need to have the tournament wins and losses incremented
     await prisma.user.update({
       where: {
         id: user.userId,
