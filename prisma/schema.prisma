@@ -146,6 +146,8 @@ model User {
   totalEqMatchesWon   Int                   @default(0)
   totalEqMatchesLost  Int?                  @default(0)
   current_eq_id       String?               @db.Uuid
+  total_tourn_wins    Int                   @default(0)
+  total_tourn_lost    Int                   @default(0)
   Account             Account[]
   Equation            Equation[]
   Session             Session[]
