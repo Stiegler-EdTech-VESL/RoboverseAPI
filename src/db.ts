@@ -237,6 +237,18 @@ export async function getUserById(userId: string) {
   }
 }
 
+export async function getUserInfoById(userId: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {id: userId},
+    });
+    return user;
+  } catch (error) {
+    console.error("Error retrieving user:", error);
+    throw new Error("Failed to retrieve user.");
+  }
+}
+
 // Obsolete by upsert, Function to update a user
 /*export async function updateUser(userId: string, data: user) {
   try {
@@ -639,7 +651,7 @@ export async function updateEquationMatchUserMuSigma(eqMatchID: string) {
 }
 
 async function updateUserTournCount(match: UserInEquationMatch) {
-  const user = await getUserById(match.userId);
+  const user = await getUserById(match.userId); //Erin - this is returning a User.UserInEquationMatch[] rather than just the User object. 
   const isWinner = match.winner;
   const totalTournWins = user.total_tourn_wins;
   const totalTorunLost = user.total_tourn_lost;
