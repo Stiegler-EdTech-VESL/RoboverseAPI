@@ -177,6 +177,19 @@ export async function upsertUser(data: User) {
   try {
     const user = await prisma.user.upsert({
       where: { id: data.id },
+      create: {
+        name: data.name || undefined,
+        email: data.email || undefined,
+        epic_id: data.epic_id || undefined,
+        discord_id: data.discord_id || undefined,
+        team_id: data.team_id || undefined,
+        image: data.image || undefined,
+        perm_id: data.perm_id || undefined,
+        totalEqMatches: data.totalEqMatches || 0,
+        totalEqMatchesWon: data.totalEqMatchesWon || 0,
+        totalEqMatchesLost: data.totalEqMatchesLost || 0,
+        current_eq_id: data.current_eq_id || undefined,
+      },
       update: {
         email: data.email || undefined,
         epic_id: data.epic_id || undefined,
@@ -189,19 +202,6 @@ export async function upsertUser(data: User) {
         totalEqMatchesLost: data.totalEqMatchesLost || undefined,
         total_tourn_wins: data.total_tourn_wins || undefined,
         total_tourn_lost: data.total_tourn_lost || undefined,
-        current_eq_id: data.current_eq_id || undefined,
-      },
-      create: {
-        name: data.name || undefined,
-        email: data.email || undefined,
-        epic_id: data.epic_id || undefined,
-        discord_id: data.discord_id || undefined,
-        team_id: data.team_id || undefined,
-        image: data.image || undefined,
-        perm_id: data.perm_id || undefined,
-        totalEqMatches: data.totalEqMatches || 0,
-        totalEqMatchesWon: data.totalEqMatchesWon || 0,
-        totalEqMatchesLost: data.totalEqMatchesLost || 0,
         current_eq_id: data.current_eq_id || undefined,
       },
     });
