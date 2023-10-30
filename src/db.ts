@@ -193,7 +193,7 @@ export async function upsertUser(data: User) {
         current_eq_id: data.current_eq_id || undefined,
       },
       create: {
-        name: "poop",
+        name: data.name,
         email: data.email || undefined,
         epic_id: data.epic_id || undefined,
         discord_id: data.discord_id || undefined,
