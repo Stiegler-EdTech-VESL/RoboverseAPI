@@ -178,6 +178,7 @@ export async function upsertUser(data: User) {
     const user = await prisma.user.upsert({
       where: { id: data.id },
       update: {
+        name: undefined,
         email: data.email || undefined,
         epic_id: data.epic_id || undefined,
         discord_id: data.discord_id || undefined,
