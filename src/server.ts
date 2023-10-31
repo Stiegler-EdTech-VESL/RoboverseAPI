@@ -315,28 +315,34 @@ app.post(
 app.put(
   "/players/:id",
   async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.id;
+    const userInitial = await db.getUserInfoById(userId);
+
     try {
       const user = await db.upsertUser({
-        id: (req.params.id as string) || undefined,
-        name: (req.query.name as string) || undefined,
-        epic_id: (req.query.epic_id as string) || undefined,
-        discord_id: (req.query.discord_id as string) || undefined,
-        team_id: (req.query.team_id as string) || undefined,
-        email: (req.query.email as string) || undefined,
-        image: (req.query.image as string) || undefined,
-        emailVerified: undefined,
-        perm_id: (req.query.perm_id as string) || undefined,
-        progression_lvl: parseInt(req.query.progression_lvl as string)|| undefined,
-        global_mu: undefined,
-        global_sigma: undefined,
-        global_ranking: undefined,
-        global_rank_title: undefined,
-        totalEqMatches: undefined,
-        totalEqMatchesWon: undefined,
-        totalEqMatchesLost: undefined,
-        total_tourn_wins: undefined,
-        total_tourn_lost: undefined,
-        current_eq_id: (req.query.current_eq_id as string) || undefined,
+        id: (req.params.id as string) || userInitial.id,
+        name: (req.query.name as string) || userInitial.name,
+        epic_id: (req.query.epic_id as string) || userInitial.epic_id,
+        discord_id: (req.query.discord_id as string) || userInitial.discord_id,
+        team_id: (req.query.team_id as string) || userInitial.team_id,
+        email: (req.query.email as string) || userInitial.email,
+        image: (req.query.image as string) || userInitial.image,
+        emailVerified: userInitial.emailVerified,
+        perm_id: (req.query.perm_id as string) || userInitial.perm_id,
+        progression_lvl:
+          parseInt(req.query.progression_lvl as string) ||
+          userInitial.progression_lvl,
+        global_mu: userInitial.global_mu,
+        global_sigma: userInitial.global_sigma,
+        global_ranking: userInitial.global_ranking,
+        global_rank_title: userInitial.global_rank_title,
+        totalEqMatches: userInitial.totalEqMatches,
+        totalEqMatchesWon: userInitial.totalEqMatchesWon,
+        totalEqMatchesLost: userInitial.totalEqMatchesLost,
+        total_tourn_wins: userInitial.total_tourn_wins,
+        total_tourn_lost: userInitial.total_tourn_lost,
+        current_eq_id:
+          (req.query.current_eq_id as string) || userInitial.current_eq_id,
       });
       res.json({ message: "Player Updated", user_id: user.id });
     } catch (error) {
@@ -467,7 +473,7 @@ app.post(
 );
 
 app.post(
-  "/matches/addUser/:id", //Erin - New endpoint for adding a User to an EquationMatch using their userId 
+  "/matches/addUser/:id", //Erin - New endpoint for adding a User to an EquationMatch using their userId
   async (req: Request, res: Response, next: NextFunction) => {
     let winBool: boolean = req.query.winner === "false" ? false : true;
     try {
@@ -494,9 +500,10 @@ app.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       db.updateEquationMatchTeamMuSigma(req.params.id);
-      db.updateEquationMatchUserMuSigma(req.params.id); //Erin - will use EquationMatch id to update the scores/ratings of User 
+      db.updateEquationMatchUserMuSigma(req.params.id); //Erin - will use EquationMatch id to update the scores/ratings of User
       res.json({
-        message: "Successfully finished match and calculations for Team and User",
+        message:
+          "Successfully finished match and calculations for Team and User",
         id: req.params.id,
       });
     } catch (error) {
