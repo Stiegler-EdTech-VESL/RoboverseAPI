@@ -181,7 +181,6 @@ export async function upsertUser(data: User) {
         name: data.name,
         email: data.email || undefined,
         epic_id: data.epic_id || undefined,
-        discord_id: data.discord_id || undefined,
         team_id: data.team_id || undefined,
         image: data.image || undefined,
         perm_id: data.perm_id || undefined,
