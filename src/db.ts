@@ -178,7 +178,7 @@ export async function upsertUser(data: User) {
     const user = await prisma.user.upsert({
       where: { id: data.id },
       update: {
-        name: undefined,
+        name: data.name,
         email: data.email || undefined,
         epic_id: data.epic_id || undefined,
         discord_id: data.discord_id || undefined,
@@ -203,6 +203,8 @@ export async function upsertUser(data: User) {
         totalEqMatches: data.totalEqMatches || 0,
         totalEqMatchesWon: data.totalEqMatchesWon || 0,
         totalEqMatchesLost: data.totalEqMatchesLost || 0,
+        total_tourn_wins: data.total_tourn_wins || 0,
+        total_tourn_lost: data.total_tourn_lost || 0,
         current_eq_id: data.current_eq_id || undefined,
       },
     });
