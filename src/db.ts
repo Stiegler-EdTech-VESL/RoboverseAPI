@@ -653,7 +653,7 @@ export async function updateEquationMatchUserMuSigma(eqMatchID: string) {
 }
 
 async function updateUserTournCount(match: UserInEquationMatch) {
-  const user = await getUserInfoById(match.userId); //Erin - this is returning a User.UserInEquationMatch[] rather than just the User object. 
+  const user = await getUserInfoById(match.userId); //Erin - This will return just a User
   const isWinner = match.winner;
   const totalTournWins = user.total_tourn_wins;
   const totalTorunLost = user.total_tourn_lost;
