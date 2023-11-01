@@ -189,6 +189,7 @@ export async function upsertUser(data: User) {
         totalEqMatchesLost: data.totalEqMatchesLost || undefined,
         total_tourn_wins: data.total_tourn_wins || undefined,
         total_tourn_lost: data.total_tourn_lost || undefined,
+        progression_lvl: data.progression_lvl || undefined,
         current_eq_id: data.current_eq_id || undefined,
       },
       create: {
