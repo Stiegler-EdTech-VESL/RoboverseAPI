@@ -250,18 +250,6 @@ export async function getUserInfoById(userId: string) {
     throw new Error("Failed to retrieve user.");
   }
 }
-export async function getUserInfoByName(userName: string) {
-  try {
-    const user = await prisma.user.findUnique({
-      where: {name: userName},
-    });
-    return user;
-  } catch (error) {
-    console.error("Error retrieving user:", error);
-    throw new Error("Failed to retrieve user.");
-  }
-}
-
 
 
 // Obsolete by upsert, Function to update a user
@@ -575,25 +563,25 @@ export async function getUserByEpicId(id: string) {
   }
 }
 
-// export async function getUserByName(id: string) { //Erin - Why are you passing in the id if you are getting user by name?
-//   try {
-//     const user = await prisma.user.findUnique({
-//       where: {
-//         name: id,
-//       },
-//       include: {
-//         Team: true,
-//         Equation: true,
-//         Perms: true,
-//       },
-//     });
+export async function getUserByName(id: string) { //Erin - Why are you passing in the id if you are getting user by name?
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        name: id,
+      },
+      include: {
+        Team: true,
+        Equation: true,
+        Perms: true,
+      },
+    });
 
-//     return user;
-//   } catch (error) {
-//     console.error("Error getting user", error);
-//     throw new Error("Failed to get user from epic id");
-//   }
-// }
+    return user;
+  } catch (error) {
+    console.error("Error getting user", error);
+    throw new Error("Failed to get user from epic id");
+  }
+}
 
 export async function getEquationMatchesByTeamId(id: string) {
   try {
