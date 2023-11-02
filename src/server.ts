@@ -279,6 +279,19 @@ app.get(
   }
 );
 
+app.get(
+  "/players/:name",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const name = req.params.name;
+      const player = await db.getUserInfoByName(name);
+      res.json(player);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 app.post(
   "/players",
   async (req: Request, res: Response, next: NextFunction) => {
