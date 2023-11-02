@@ -172,6 +172,7 @@ export async function deleteTeam(teamId: string) {
 
 // Function to upsert a user
 export async function upsertUser(data: User) {
+  console.trace();
   const printData = JSON.stringify(data);
   console.log("DATA THAT IS PASSED TO UPSERTUSER: " + printData); //Erin - When upserUser is called, it is only given id, name, and prog_lvl
   try {
