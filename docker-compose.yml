@@ -2,7 +2,10 @@ version: "3"
 services:
   api:
     image: ml-game-api
-    build: .
+    build: 
+      context: .
+      args:
+        - DATABASE_URL=${DATABASE_URL:-postgresql://user:password@localhost:5432/mydb?schema=public}
     networks:
       - backend
     ports:
