@@ -257,6 +257,9 @@ app.get("/players", async (req: Request, res: Response, next: NextFunction) => {
     if (epic_id) {
       const player = await db.getUserByEpicId(epic_id);
       res.json(player);
+    } else if(name) {
+      const player = await db.getUserByName(name);
+      res.json(player);
     } else {
       const players = await db.getAllUsers();
       res.json({ players });
@@ -279,18 +282,6 @@ app.get(
   }
 );
 
-app.get(
-  "/players/:name",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const name = req.params.name;
-      const player = await db.getUserInfoByName(name);
-      res.json(player);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
 
 app.post(
   "/players",
