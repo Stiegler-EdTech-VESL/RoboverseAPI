@@ -1,5 +1,7 @@
 FROM node:18-alpine
 
+ARG DATABASE_URL
+
 RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
