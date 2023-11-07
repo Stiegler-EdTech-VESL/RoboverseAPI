@@ -87,7 +87,7 @@ model Team {
   primary             String?               @default("#a69977") @db.VarChar(255)
   screen              String?               @default("#ffffff") @db.VarChar(255)
   secondary           String?               @default("#292826") @db.VarChar(255)
-  districtId          String?               @db.Uuid
+  conference_id       String?               @db.Uuid
   district_mu         Decimal?              @default(25) @db.Decimal
   district_sigma      Decimal?              @default(8.3333333333) @db.Decimal
   global_mu           Decimal?              @default(25) @db.Decimal
@@ -98,7 +98,7 @@ model Team {
   district_rank_title String?               @default("unranked")
   Equation            Equation[]
   Job                 Job[]
-  District            District?             @relation(fields: [districtId], references: [id])
+  Conference          Conference?           @relation(fields: [conference_id], references: [id], map: "Team_districtId_fkey")
   TeamEqEloHistory    TeamEqEloHistory[]
   TeamInEquationMatch TeamInEquationMatch[]
   User                User[]
@@ -172,13 +172,6 @@ model TeamEqEloHistory {
   Team      Team     @relation(fields: [teamId], references: [id], onUpdate: Restrict)
 }
 
-model District {
-  id   String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name String  @unique
-  logo String?
-  Team Team[]
-}
-
 model Perms {
   id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name            String  @default("Custom")
@@ -210,6 +203,13 @@ model UserInEquationMatch {
   Equation                  Equation?     @relation(fields: [equationID], references: [id])
   EquationMatch             EquationMatch @relation(fields: [equationMatchId], references: [id])
   User                      User          @relation(fields: [userId], references: [id])
+}
+
+model Conference {
+  id   String  @id(map: "District_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String  @unique(map: "District_name_key")
+  logo String?
+  Team Team[]
 }
 
 enum ApiAccess {
