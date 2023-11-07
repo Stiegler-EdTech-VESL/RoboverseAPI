@@ -142,7 +142,7 @@ app.get("/teams", async (req: Request, res: Response, next: NextFunction) => {
   try {
     //get teams by name /teams?name={name}
     const name = req.query.name as string;
-    const district = req.query.district_id as string;
+    const district = req.query.conference_id as string;
     if (name) {
       const team = await db.getTeamByName(name);
 

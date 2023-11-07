@@ -454,11 +454,11 @@ export async function getAllTeams() {
   }
 }
 
-export async function getAllTeamsByDistrict(district_id: string) {
+export async function getAllTeamsByDistrict(conference_id: string) {
   try {
     const teams = await prisma.team.findMany({
       where: {
-        districtId: district_id,
+        districtId: conference_id,
       },
       include: {
         Equation: true,
