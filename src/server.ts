@@ -13,9 +13,10 @@ import cors from "cors";
 
 const allowedOrigins = [
   "https://dev-robo.vesl.gg",
-  "https://dev-api.robo.vesl.gg/",
-  "https://prod-api.robo.vesl.gg/",
+  "https://dev-api.robo.vesl.gg",
+  "https://prod-api.robo.vesl.gg",
   "https://robo.vesl.gg", // Add additional origins here
+  "http://localhost:3000", // REMEMBER TO REMOVE
 ];
 
 //CORS stuff
