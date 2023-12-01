@@ -13,8 +13,11 @@ import cors from "cors";
 
 const allowedOrigins = [
   "https://dev-robo.vesl.gg",
-  "https://api.vesl.gg",
-  "https://robo.vesl.gg", // Add additional origins here
+  "https://dev-api.robo.vesl.gg",
+  "https://prod-api.robo.vesl.gg",
+  "https://robo.vesl.gg",
+  "https://stage-robo.vesl.gg", // Add additional origins here
+  "http://localhost:3000", // REMEMBER TO REMOVE
 ];
 
 //CORS stuff
@@ -142,7 +145,7 @@ app.get("/teams", async (req: Request, res: Response, next: NextFunction) => {
   try {
     //get teams by name /teams?name={name}
     const name = req.query.name as string;
-    const district = req.query.district_id as string;
+    const district = req.query.conference_id as string;
     if (name) {
       const team = await db.getTeamByName(name);
 
@@ -308,6 +311,7 @@ app.post(
         global_ranking: undefined,
         global_rank_title: undefined,
         current_eq_id: undefined,
+        createdAt: undefined,
       });
       res.json({ message: "Player Created", user_id: user.id });
     } catch (error) {
@@ -347,6 +351,7 @@ app.put(
         total_tourn_lost: userInitial.total_tourn_lost,
         current_eq_id:
           (req.query.current_eq_id as string) || userInitial.current_eq_id,
+        createdAt: undefined,
       });
       res.json({ message: "Player Updated", user_id: user.id });
     } catch (error) {
