@@ -87,7 +87,7 @@ model Team {
   primary             String?               @default("#a69977") @db.VarChar(255)
   screen              String?               @default("#ffffff") @db.VarChar(255)
   secondary           String?               @default("#292826") @db.VarChar(255)
-  conference_id       String?               @db.Uuid
+  districtId          String?               @db.Uuid
   district_mu         Decimal?              @default(25) @db.Decimal
   district_sigma      Decimal?              @default(8.3333333333) @db.Decimal
   global_mu           Decimal?              @default(25) @db.Decimal
@@ -98,7 +98,7 @@ model Team {
   district_rank_title String?               @default("unranked")
   Equation            Equation[]
   Job                 Job[]
-  Conference          Conference?           @relation(fields: [conference_id], references: [id], map: "Team_districtId_fkey")
+  District            District?             @relation(fields: [districtId], references: [id])
   TeamEqEloHistory    TeamEqEloHistory[]
   TeamInEquationMatch TeamInEquationMatch[]
   User                User[]
@@ -135,7 +135,7 @@ model User {
   image               String?
   team_id             String?               @default(dbgenerated("'e968e4fc-80e6-4868-8e83-d6451c2bfcaa'::uuid")) @db.Uuid
   emailVerified       DateTime?
-  discord_id          String                @default(dbgenerated("('@'::text || (name)::text)")) @db.VarChar(255)
+  discord_id          String?               @unique
   perm_id             String?               @db.Uuid
   progression_lvl     Int                   @default(0)
   global_mu           Decimal               @default(25) @db.Decimal
@@ -148,6 +148,7 @@ model User {
   current_eq_id       String?               @db.Uuid
   total_tourn_wins    Int                   @default(0)
   total_tourn_lost    Int                   @default(0)
+  createdAt           DateTime              @default(now())
   Account             Account[]
   Equation            Equation[]
   Session             Session[]
@@ -205,9 +206,9 @@ model UserInEquationMatch {
   User                      User          @relation(fields: [userId], references: [id])
 }
 
-model Conference {
-  id   String  @id(map: "District_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name String  @unique(map: "District_name_key")
+model District {
+  id   String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String  @unique
   logo String?
   Team Team[]
 }
