@@ -2,6 +2,7 @@ import "express-async-errors";
 import { NextFunction, Request, Response } from "express";
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
+import { exclude } from "./utils/excludeData";
 const app = express();
 const port = 3000; // default port to listen
 
@@ -259,10 +260,12 @@ app.get("/players", async (req: Request, res: Response, next: NextFunction) => {
     const name = req.query.name as string;
     if (epic_id) {
       const player = await db.getUserByEpicId(epic_id);
-      res.json(player);
+      const resUser = exclude(player, ['email']); 
+      res.json(resUser);
     } else if(name) {
       const player = await db.getUserByName(name);
-      res.json(player);
+      const resUser = exclude(player, ['email']); 
+      res.json(resUser);
     } else {
       const players = await db.getAllUsers();
       res.json({ players });
@@ -278,7 +281,8 @@ app.get(
     try {
       const id = req.params.id;
       const player = await db.getUserById(id);
-      res.json(player);
+      const resUser = exclude(player, ['email']);
+      res.json(resUser);
     } catch (error) {
       next(error);
     }
