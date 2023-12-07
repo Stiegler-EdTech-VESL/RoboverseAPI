@@ -351,7 +351,7 @@ app.put(
           (req.query.current_eq_id as string) || userInitial.current_eq_id,
         createdAt: undefined,
       });
-      res.json({ message: "Player Updated", user_id: user.id });
+      res.json({ message: `${user.name} was updated` });
     } catch (error) {
       next(error);
     }
@@ -469,8 +469,8 @@ app.post(
         winBool
       );
       res.json({
-        message: "Team Added to Match",
-        id: id,
+        message:`Team ${req.query.teamId} Added to Match`,
+        matchId: id,
         winner: req.query.winner,
       });
     } catch (error) {
@@ -493,7 +493,7 @@ app.post(
       );
       res.json({
         message: "User Added to Match",
-        id: id,
+        matchId: id,
         winner: req.query.winner,
       });
     } catch (error) {
@@ -511,7 +511,7 @@ app.post(
       res.json({
         message:
           "Successfully finished match and calculations for Team and User",
-        id: req.params.id,
+        matchId: req.params.id,
       });
     } catch (error) {
       next(error);
@@ -594,7 +594,7 @@ app.put(
           parseInt(req.query.elo_contribute as string) || undefined,
         content: req.query.content || undefined,
       });
-      res.json({ message: "Equation Updated", equationId: eq.id });
+      res.json({ message: `${eq.name} equation updated` });
     } catch (error) {
       next(error);
     }
