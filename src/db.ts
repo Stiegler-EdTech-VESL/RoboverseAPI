@@ -441,10 +441,31 @@ export async function getEquationById(eqId: string) {
   try {
     const eq = await prisma.equation.findUnique({
       where: { id: eqId },
-      include: {
-        Team: true,
-        User: true,
-      },
+      select: {
+        id: true,
+        name: true,
+        user_id: true,
+        elo_contribute: true,
+        content: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            primary: true,
+            secondary: true,
+            screen: true,
+            accent: true
+          }
+        },
+        User: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            current_eq_id: true
+          }
+        }
+      }
     });
     return eq;
   } catch (error) {
