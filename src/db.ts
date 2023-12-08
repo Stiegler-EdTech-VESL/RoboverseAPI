@@ -236,7 +236,13 @@ export async function getUserById(userId: string) {
         current_eq_id: true,
         Equation: true,
         Perms: true,
-        Team: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            districtId: true
+          }
+        },
       },
     });
     return user;
@@ -319,10 +325,31 @@ export async function upsertEquation(data: Equation) {
 export async function getAllEquations() {
   try {
     const eqs = await prisma.equation.findMany({
-      include: {
-        Team: true,
-        User: true,
-      },
+      select: {
+        id: true,
+        name: true,
+        user_id: true,
+        elo_contribute: true,
+        content: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            primary: true,
+            secondary: true,
+            screen: true,
+            accent: true
+          }
+        },
+        User: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            current_eq_id: true
+          }
+        }
+      }
     });
     return eqs;
   } catch (error) {
@@ -338,10 +365,31 @@ export async function getEquationsByTeamId(teamId: string) {
   try {
     const eqs = await prisma.equation.findMany({
       where: { team_id: teamId },
-      include: {
-        Team: true,
-        User: true,
-      },
+      select: {
+        id: true,
+        name: true,
+        user_id: true,
+        elo_contribute: true,
+        content: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            primary: true,
+            secondary: true,
+            screen: true,
+            accent: true
+          }
+        },
+        User: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            current_eq_id: true
+          }
+        }
+      }
     });
     return eqs;
   } catch (error) {
@@ -355,10 +403,31 @@ export async function getEquationByUserId(userId: string) {
   try {
     const eqs = await prisma.equation.findMany({
       where: { user_id: userId },
-      include: {
-        Team: true,
-        User: true,
-      },
+      select: {
+        id: true,
+        name: true,
+        user_id: true,
+        elo_contribute: true,
+        content: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            primary: true,
+            secondary: true,
+            screen: true,
+            accent: true
+          }
+        },
+        User: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            current_eq_id: true
+          }
+        }
+      }
     });
     return eqs;
   } catch (error) {
@@ -498,7 +567,13 @@ export async function getAllUsers() {
         current_eq_id: true,
         Equation: true,
         Perms: true,
-        Team: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            districtId: true
+          }
+        },
       },
     });
     return users;
@@ -580,7 +655,13 @@ export async function getUserByEpicId(id: string) {
         current_eq_id: true,
         Equation: true,
         Perms: true,
-        Team: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            districtId: true
+          }
+        },
       },
     });
 
@@ -608,7 +689,13 @@ export async function getUserByName(id: string) {
         current_eq_id: true,
         Equation: true,
         Perms: true,
-        Team: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            districtId: true
+          }
+        },
       },
     });
 
