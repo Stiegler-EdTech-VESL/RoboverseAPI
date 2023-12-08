@@ -2,7 +2,6 @@ import "express-async-errors";
 import { NextFunction, Request, Response } from "express";
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
-import { exclude } from "./utils/excludeData";
 const app = express();
 const port = 3000; // default port to listen
 
@@ -18,7 +17,6 @@ const allowedOrigins = [
   "https://prod-api.robo.vesl.gg",
   "https://robo.vesl.gg",
   "https://stage-robo.vesl.gg", // Add additional origins here
-  "http://localhost:3000", // REMEMBER TO REMOVE
 ];
 
 //CORS stuff
@@ -260,12 +258,10 @@ app.get("/players", async (req: Request, res: Response, next: NextFunction) => {
     const name = req.query.name as string;
     if (epic_id) {
       const player = await db.getUserByEpicId(epic_id);
-      const resUser = exclude(player, ['email']); 
-      res.json(resUser);
-    } else if(name) {
+      res.json(player);
+    } else if (name) {
       const player = await db.getUserByName(name);
-      const resUser = exclude(player, ['email']); 
-      res.json(resUser);
+      res.json(player);
     } else {
       const players = await db.getAllUsers();
       res.json({ players });
@@ -281,14 +277,12 @@ app.get(
     try {
       const id = req.params.id;
       const player = await db.getUserById(id);
-      const resUser = exclude(player, ['email']);
-      res.json(resUser);
+      res.json(player);
     } catch (error) {
       next(error);
     }
   }
 );
-
 
 app.post(
   "/players",
@@ -357,7 +351,7 @@ app.put(
           (req.query.current_eq_id as string) || userInitial.current_eq_id,
         createdAt: undefined,
       });
-      res.json({ message: "Player Updated", user_id: user.id });
+      res.json({ message: `${user.name} was updated` });
     } catch (error) {
       next(error);
     }
@@ -475,8 +469,8 @@ app.post(
         winBool
       );
       res.json({
-        message: "Team Added to Match",
-        id: id,
+        message:`Team ${req.query.teamId} Added to Match`,
+        matchId: id,
         winner: req.query.winner,
       });
     } catch (error) {
@@ -499,7 +493,7 @@ app.post(
       );
       res.json({
         message: "User Added to Match",
-        id: id,
+        matchId: id,
         winner: req.query.winner,
       });
     } catch (error) {
@@ -517,7 +511,7 @@ app.post(
       res.json({
         message:
           "Successfully finished match and calculations for Team and User",
-        id: req.params.id,
+        matchId: req.params.id,
       });
     } catch (error) {
       next(error);
@@ -600,7 +594,7 @@ app.put(
           parseInt(req.query.elo_contribute as string) || undefined,
         content: req.query.content || undefined,
       });
-      res.json({ message: "Equation Updated", equationId: eq.id });
+      res.json({ message: `${eq.name} equation updated` });
     } catch (error) {
       next(error);
     }

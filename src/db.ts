@@ -126,12 +126,13 @@ export async function getTeamById(teamId: string) {
   try {
     const team = await prisma.team.findUnique({
       where: { id: teamId },
-      include: {
-        Equation: true,
-        Job: true,
-        User: true,
-        TeamInEquationMatch: true,
-        District: true,
+      select: {
+        id: true,
+        name: true,
+        primary: true,
+        screen: true,
+        secondary: true,
+        districtId: true,
       },
     });
     return team;
@@ -224,13 +225,24 @@ export async function getUserById(userId: string) {
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      include: {
-        Account: true,
+      select: {
+        id: true,
+        name: true,
+        image: true,
+        progression_lvl: true,
+        global_ranking: true,
+        global_rank_title: true,
+        totalEqMatches: true,
+        current_eq_id: true,
         Equation: true,
-        Session: true,
-        Team: true,
         Perms: true,
-        UserInEquationMatch: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            districtId: true
+          }
+        },
       },
     });
     return user;
@@ -243,7 +255,7 @@ export async function getUserById(userId: string) {
 export async function getUserInfoById(userId: string) {
   try {
     const user = await prisma.user.findUnique({
-      where: {id: userId},
+      where: { id: userId },
     });
     return user;
   } catch (error) {
@@ -251,7 +263,6 @@ export async function getUserInfoById(userId: string) {
     throw new Error("Failed to retrieve user.");
   }
 }
-
 
 // Obsolete by upsert, Function to update a user
 /*export async function updateUser(userId: string, data: user) {
@@ -314,10 +325,31 @@ export async function upsertEquation(data: Equation) {
 export async function getAllEquations() {
   try {
     const eqs = await prisma.equation.findMany({
-      include: {
-        Team: true,
-        User: true,
-      },
+      select: {
+        id: true,
+        name: true,
+        user_id: true,
+        elo_contribute: true,
+        content: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            primary: true,
+            secondary: true,
+            screen: true,
+            accent: true
+          }
+        },
+        User: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            current_eq_id: true
+          }
+        }
+      }
     });
     return eqs;
   } catch (error) {
@@ -328,14 +360,36 @@ export async function getAllEquations() {
 
 // Function to get all equations by a team
 
+//TODO: Weed out unnecessary data
 export async function getEquationsByTeamId(teamId: string) {
   try {
     const eqs = await prisma.equation.findMany({
       where: { team_id: teamId },
-      include: {
-        Team: true,
-        User: true,
-      },
+      select: {
+        id: true,
+        name: true,
+        user_id: true,
+        elo_contribute: true,
+        content: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            primary: true,
+            secondary: true,
+            screen: true,
+            accent: true
+          }
+        },
+        User: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            current_eq_id: true
+          }
+        }
+      }
     });
     return eqs;
   } catch (error) {
@@ -349,10 +403,31 @@ export async function getEquationByUserId(userId: string) {
   try {
     const eqs = await prisma.equation.findMany({
       where: { user_id: userId },
-      include: {
-        Team: true,
-        User: true,
-      },
+      select: {
+        id: true,
+        name: true,
+        user_id: true,
+        elo_contribute: true,
+        content: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            primary: true,
+            secondary: true,
+            screen: true,
+            accent: true
+          }
+        },
+        User: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            current_eq_id: true
+          }
+        }
+      }
     });
     return eqs;
   } catch (error) {
@@ -366,10 +441,31 @@ export async function getEquationById(eqId: string) {
   try {
     const eq = await prisma.equation.findUnique({
       where: { id: eqId },
-      include: {
-        Team: true,
-        User: true,
-      },
+      select: {
+        id: true,
+        name: true,
+        user_id: true,
+        elo_contribute: true,
+        content: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            primary: true,
+            secondary: true,
+            screen: true,
+            accent: true
+          }
+        },
+        User: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            current_eq_id: true
+          }
+        }
+      }
     });
     return eq;
   } catch (error) {
@@ -440,12 +536,13 @@ export async function deleteJob(jobId: string) {
 export async function getAllTeams() {
   try {
     const teams = await prisma.team.findMany({
-      include: {
-        Equation: true,
-        Job: true,
-        User: true,
-        TeamInEquationMatch: true,
-        District: true,
+      select: {
+        id: true,
+        name: true,
+        primary: true,
+        screen: true,
+        secondary: true,
+        districtId: true,
       },
     });
     return teams;
@@ -461,12 +558,13 @@ export async function getAllTeamsByDistrict(conference_id: string) {
       where: {
         districtId: conference_id,
       },
-      include: {
-        Equation: true,
-        Job: true,
-        User: true,
-        TeamInEquationMatch: true,
-        District: true,
+      select: {
+        id: true,
+        name: true,
+        primary: true,
+        screen: true,
+        secondary: true,
+        districtId: true,
       },
     });
     return teams;
@@ -479,11 +577,24 @@ export async function getAllTeamsByDistrict(conference_id: string) {
 export async function getAllUsers() {
   try {
     const users = await prisma.user.findMany({
-      include: {
+      select: {
+        id: true,
+        name: true,
+        image: true,
+        progression_lvl: true,
+        global_ranking: true,
+        global_rank_title: true,
+        totalEqMatches: true,
+        current_eq_id: true,
         Equation: true,
-        Team: true,
         Perms: true,
-        UserInEquationMatch: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            districtId: true
+          }
+        },
       },
     });
     return users;
@@ -512,9 +623,13 @@ export async function getTeamByName(name: string) {
   try {
     const team = await prisma.team.findUnique({
       where: { name: name },
-      include: {
-        User: true,
-        District: true,
+      select: {
+        id: true,
+        name: true,
+        primary: true,
+        screen: true,
+        secondary: true,
+        districtId: true,
       },
     });
     return team;
@@ -550,10 +665,24 @@ export async function getUserByEpicId(id: string) {
       where: {
         epic_id: id,
       },
-      include: {
-        Team: true,
+      select: {
+        id: true,
+        name: true,
+        image: true,
+        progression_lvl: true,
+        global_ranking: true,
+        global_rank_title: true,
+        totalEqMatches: true,
+        current_eq_id: true,
         Equation: true,
         Perms: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            districtId: true
+          }
+        },
       },
     });
 
@@ -564,16 +693,30 @@ export async function getUserByEpicId(id: string) {
   }
 }
 
-export async function getUserByName(id: string) { //Erin - Why are you passing in the id if you are getting user by name?
+export async function getUserByName(id: string) {
   try {
     const user = await prisma.user.findUnique({
       where: {
         name: id,
       },
-      include: {
-        Team: true,
+      select: {
+        id: true,
+        name: true,
+        image: true,
+        progression_lvl: true,
+        global_ranking: true,
+        global_rank_title: true,
+        totalEqMatches: true,
+        current_eq_id: true,
         Equation: true,
         Perms: true,
+        Team: {
+          select: {
+            id: true,
+            name: true,
+            districtId: true
+          }
+        },
       },
     });
 
@@ -668,7 +811,7 @@ async function updateUserTournCount(match: UserInEquationMatch) {
   } else {
     upsertUser({
       ...user,
-      name:user.name,
+      name: user.name,
       total_tourn_lost: totalTorunLost + 1,
     });
   }
